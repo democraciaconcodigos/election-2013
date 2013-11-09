@@ -14,7 +14,7 @@ class PalmeroFTW(object):
     primary_csv_path = "./input/votos_establecimiento_caba_paso.csv"
     general_csv_path = "./input/votos_establecimiento_cordoba_octubre.csv"
     location_json_path = "./input/locales_caba_paso2013.geojson"
-    location_json_path = "./input/DEMO_locales_cba_paso2013.geojson"
+    location_json_path = "./input/escuelas.finales.972.json"
 
     listas = [
         '3',
@@ -45,7 +45,7 @@ class PalmeroFTW(object):
         'overall_total',
     ] + listas
 
-    utcsv_path = "output/merged_totals.csv"
+    outcsv_path = "output/merged_totals.csv"
     outjson_path = "output/merged_totals.geojson"
 
     def merge(self):
