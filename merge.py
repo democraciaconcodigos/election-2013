@@ -12,22 +12,40 @@ class PalmeroFTW(object):
     All the tricks.
     """
     primary_csv_path = "./input/votos_establecimiento_caba_paso.csv"
-    general_csv_path = "./input/votos_establecimiento_caba_octubre.csv"
+    general_csv_path = "./input/votos_establecimiento_cordoba_octubre.csv"
     location_json_path = "./input/locales_caba_paso2013.geojson"
+    location_json_path = "./input/DEMO_locales_cba_paso2013.geojson"
+
+    listas = [
+        '3',
+        '47',
+        '191',
+        '217',
+        '501',
+        '503',
+        '505',
+        '512',
+        '514',
+        '9001',
+        '9002',
+        '9003',
+        '9004',
+        '9005',
+        '9006',
+    ]
+
     outheaders = [
         'fake_id',
-        '187_total', # Partido Autodeterminacion y Libertad (Dark blue)
-        '501_total', # Allanza Frente para la Victoria (Light Blue)
-        '502_total', # Allanza UNEN (Green)
-        '503_total', # Allanza Union Pro (Yellow)
-        '505_total', # Allanza Fet. de Izq.y de los Trabajadores (Red)
-        '506_total', # Allanza Camino Popular (Gray)
+#        '187', # Partido Autodeterminacion y Libertad (Dark blue)
+#        '501', # Allanza Frente para la Victoria (Light Blue)
+#        '502', # Allanza UNEN (Green)
+#        '503', # Allanza Union Pro (Yellow)
+#        '505', # Allanza Fet. de Izq.y de los Trabajadores (red)
+#        '506', # Allanza Camino Popular (Gray)
         'overall_total',
-        'leader',
-        'leader_total',
-        'margin_of_victory',
-    ]
-    outcsv_path = "output/merged_totals.csv"
+    ] + listas
+
+    utcsv_path = "output/merged_totals.csv"
     outjson_path = "output/merged_totals.geojson"
 
     def merge(self):
@@ -54,29 +72,27 @@ class PalmeroFTW(object):
                 row['properties']['mesa_desde'],
                 row['properties']['mesa_hasta']
             )
-            results_data = csv_data[fake_id]
+            try:
+                results_data = csv_data[fake_id]
+            except KeyError:
+                print "Does not have data for the tables %s" % fake_id
             # Filter it down to the data we want to keep
             merged_dict = {
                 'geometry': row['geometry'],
-                'id': row['id'],
+#                'id': row['id'],
                 'properties': {
                     'direccion': row['properties']['direccion'],
                     'establecim': row['properties']['establecim'],
                     'seccion': row['properties']['seccion'],
                     'circuito': row['properties']['circuito'],
-                    '187_total': int(results_data['187_total']),
-                    '501_total': int(results_data['501_total']),
-                    '502_total': int(results_data['502_total']),
-                    '503_total': int(results_data['503_total']),
-                    '505_total':  int(results_data['505_total']),
-                    '506_total': int(results_data['506_total']),
                     'overall_total': int(results_data['overall_total']),
                     'fake_id': results_data['fake_id'],
-                    'leader': int(results_data['leader']),
-                    'leader_total': int(results_data['leader_total']),
-                    'margin_of_victory': int(results_data['margin_of_victory'])
                 }
             }
+            merged_dict["votos"] = {}
+            for party in self.listas:
+                merged_dict["votos"][party] = int(results_data[party])
+
             # Toss it in the global list
             merged_features.append(merged_dict)
         # Structure out new merged JSON
@@ -96,32 +112,22 @@ class PalmeroFTW(object):
         # Open the CSV
         general_csv = csv.DictReader(open(self.general_csv_path, 'r'))
         # Loop through the rows
-        grouped_by_precinct = {}
+        grouped_by_school = {}
         for row in general_csv:
             # And regroup them so each fake id is keyed to
             # all of the list totals for that precinct
             fake_id = "%s-%s" % (row['mesa_desde'], row['mesa_hasta'])
             try:
-                grouped_by_precinct[fake_id][row['vot_parcodigo']] = row['total']
+                grouped_by_school[fake_id][row['vot_parcodigo']] = row['total']
             except KeyError:
-                grouped_by_precinct[fake_id] = {
+                grouped_by_school[fake_id] = {
                     row['vot_parcodigo']: row['total']
                 }
         # Now loop through that
         outrows = []
-        for fake_id, totals in grouped_by_precinct.items():
+        for fake_id, totals in grouped_by_school.items():
             # Figure out the overall total of votes
             overall_total = sum(map(int, totals.values()))
-            # Rank the lists from highest to lowest votes
-            ranking = sorted(
-                totals.items(),
-                key=lambda x:int(x[1]),
-                reverse=True
-            )
-            # Pull out the leader and their vote total
-            leader, leader_total = ranking[0]
-            # Calculate their margin of victory over the second place list
-            margin_of_victory = calculate.margin_of_victory([int(i[1]) for i in ranking])
             # Start up a row to print out
             outrow = [fake_id,]
             # Load in the lists in the same "alphabetical" order
@@ -129,9 +135,6 @@ class PalmeroFTW(object):
                 outrow.append(int(total))
             # Load in the extra stuff we've calculated
             outrow.append(int(overall_total))
-            outrow.append(leader)
-            outrow.append(int(leader_total))
-            outrow.append(int(margin_of_victory))
             # Add this row to the global list outside the loop
             outrows.append(outrow)
         # Open up a text file and write out all the data
