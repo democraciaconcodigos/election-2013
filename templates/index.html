@@ -58,22 +58,20 @@
     var initialLon = {{initial_lon}}
     var geoJsonUrl = "{{ url_for('static', filename='test.geojson') }}"
     var listNames = {
-         '3': ['UCR','#ff0000'],
+         '003': ['UCR','#ff0000'],
          '47':['CCV','#0b4c5f'],
-         '191':['VIN','#ff00ff'],
+         '191':['VINDEP','#ff00ff'],
          '217':['EVC','#fe9a2e'],
-         '501': ["FPV", "#ffda00"],
-          '503': ["AUP", '#ffff00'],
+         '501': ["FPV", '#3ea1d2'],
+         '503': ["Union PRO", '#ffff00'],
          '504': ['AUC','#ffbf00'],
          '505': ['FIT', '#50ade6'],
          '512':['UPC','#04b486'],
-         '514':['FPCS','#08298a'],
-         '9001':['ELECTORES','#000000'],
-         '9002':['VOTANTES','#ff0080'],
-         '9003':['VIMPUG','#b18904'],
-         '9004':['VBLANCOS','#ffffff'],
-         '9005':['VNULOS','#a4a4a4'],
-         '9006':['VRECURRIDOS','#31b404']
+         '514':['FPCyS','#08298a'],
+         '9003':['Impugnados','#b18904'],
+         '9004':['Blancos','#ffffff'],
+         '9005':['Nulos','#a4a4a4'],
+         '9006':['Recurridos','#31b404']
     }
     </script>
     <script type="text/javascript" src="{{ url_for('static', filename='script.js') }}">

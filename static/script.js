@@ -88,7 +88,7 @@ function titleCase(str) {
 }
 
 function getPercentage(value, total) {
-    return ((value/total)*100).toFixed(1);
+    return ((value/total)*100).toFixed(2);
 }
 
 var $width = $(window).width();
@@ -128,7 +128,6 @@ $.getJSON(geoJsonUrl, function(response) {
     // Pull in the circle layer from GeoJSON
     var circleLayer = L.geoJson(response, {
         pointToLayer: function (feature, latlng) {
-            console.log(feature);
             var leaderData = getLeader(feature['properties']);
             var marker = new L.circleMarker(latlng, {
                 fillColor: getColor(listNames, leaderData[0]),
