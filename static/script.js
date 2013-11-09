@@ -1,3 +1,37 @@
+//find a way to assing colors on the fly!
+function setColors(listNames) {
+    result = {};
+    for(var propt in listNames){
+        result[propt] = "red";
+    }
+    return result;
+}
+
+function getLeader(data) {
+    var votes = data['votos'];
+    var leader = "";
+    var leaderVotes = 0;
+    var leaderMargin = 0;
+    var secondLeaderVotes = 0;
+    for(var propt in votes) {
+        if(!leader) {
+            leader = propt;
+            leaderVotes = votes[propt];
+            leaderMargin = leaderVotes;
+        }
+        if(votes[propt] > leaderVotes) {
+            leader = propt;
+            secondLeaderVotes = leaderVotes;
+            leaderVotes = votes[propt];
+        }
+        else if(votes[propt] > secondLeaderVotes && leader !== propt) {
+            secondLeaderVotes = votes[propt];
+        }
+        leaderMargin = leaderVotes - secondLeaderVotes;
+    }
+    return [leader, leaderVotes, leaderMargin];
+}
+
 var addCommas = function (nStr) {
         nStr += '';
         x = nStr.split('.');
@@ -8,8 +42,12 @@ var addCommas = function (nStr) {
             x1 = x1.replace(rgx, '$1' + ',' + '$2');
         }
         return x1 + x2;
-    };
+};
+
     function titleCase(str) {
+        if (!str) {
+            return "";
+        }
         var str = str.toLowerCase();
         return str.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
     };
@@ -48,34 +86,26 @@ var addCommas = function (nStr) {
         return Math.sqrt(value)*radiusConstant;
     };
 
-    var list2color = {
-        '501': '#50ade6', // light blue
-        '502': '#6eb440', // green
-        '503': '#ffda00'  // yellow
-    }
-
-    var list2abbrev = {
-        '501': 'FpV',
-        '502': 'UNEN',
-        '503': 'Pro'
-    };
-
+    colorList = setColors(listNames);
     // Fire off to get our GeoJSON
     $.getJSON(geoJsonUrl, function(response) {
+
+        //get parties and assign colors
 
         // Pull in the circle layer from GeoJSON
         var circleLayer = L.geoJson(response, {
             pointToLayer: function (feature, latlng) {
+                var leaderData = getLeader(feature['properties']);
                 var marker = new L.circleMarker(latlng, {
-                    fillColor: list2color[feature.properties['leader']],
-                    color: list2color[feature.properties['leader']],
+                    fillColor: colorList[leaderData[0]],
+                    color: colorList[leaderData[0]],
                     fillOpacity: 0.5,
                     weight: 1
-                })
-                .setRadius(getRadius(feature.properties['margin_of_victory']))
-                .bindPopup(_.template($("#template-popup").html(), feature.properties)
-                );
-                return marker;
+            })
+            .setRadius(getRadius(leaderData[2]))
+            .bindPopup(_.template($("#template-popup").html(), feature.properties)
+            );
+            return marker;
             }
         });
 
