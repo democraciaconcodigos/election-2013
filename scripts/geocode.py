@@ -4,6 +4,19 @@ import csv
 import json
 import urllib2
 
+"""
+Convert CSV file with format:
+
+"id","mesa_hasta","codigo_distrito","mesa_desde","codigo_postal","cant_mesas","direccion","seccion","circuito","localidad","distrito","establecimiento","dne_distrito_id","dne_seccion_id"
+
+To output CSV file:
+
+"Id","Lat","Lng"
+
+Using Google Geocoding HTTP API to get GPS coordinates.
+"""
+
+
 def convertCSV(filepath):
     """
     does the whole conversion from full csv to id-lat-lng csv
