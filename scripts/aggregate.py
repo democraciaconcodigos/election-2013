@@ -16,7 +16,17 @@ Output:
 
 import csv
 
-results_input_filename = 'data/80222-solo-cba-resultados-diputados-nacionales.csv'
+
+paso = True
+if paso:
+    results_input_filename = 'data/80267-paso-por-cirduito-y-mesa.csv'
+    output_filename = 'input/votos_establecimiento_cordoba_paso.csv'
+else:
+    results_input_filename = 'data/80222-solo-cba-resultados-diputados-nacionales.csv'
+    output_filename = 'input/votos_establecimiento_cordoba_octubre.csv'
+
+#results_input_filename = 'data/80222-solo-cba-resultados-diputados-nacionales.csv'
+#results_input_filename = 'data/80267-paso-por-cirduito-y-mesa.csv'
 results_file = open(results_input_filename)
 results_csvreader = csv.reader(results_file)
 
@@ -81,7 +91,8 @@ for row in results_csvreader:
 sorted_results = sorted(results.items(), key=lambda x: x[0])
 
 # write output:
-output_filename = 'input/votos_establecimiento_cordoba_octubre.csv'
+#output_filename = 'input/votos_establecimiento_cordoba_octubre.csv'
+#output_filename = 'input/votos_establecimiento_cordoba_paso.csv'
 outf = open(output_filename, 'w')
 csvwriter = csv.writer(outf)
 #header = 'mesa_hasta,votacion,mesa_desde,dne_distri,vot_parcodigo,total,id,dne_seccio,the_geom,cartodb_id,created_at,updated_at'
