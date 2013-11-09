@@ -5,40 +5,19 @@
         <table>
             <thead>
                 <th>Party</th>
-                <th class="right">Votes</th>
-                <th class="right">Pct.</th>
+                <th class="right">Votos</th>
+                <th class="right">Pctg.</th>
             </thead>
             <tbody>
-                <tr>
-                    <td>FpV <% if (obj.leader == '501' ) { %>✔<% } %> </td>
-                    <td class="right"><%= addCommas(obj['501_total']) %></td>
-                    <td class="right"><%= getPercentage(obj['501_total'], obj['overall_total']) %>%</td>
-                </tr>
-                <tr>
-                    <td>UNEN <% if (obj.leader == '502' ) { %>✔<% } %></td>
-                    <td class="right"><%= addCommas(obj['502_total']) %></td>
-                    <td class="right"><%= getPercentage(obj['502_total'], obj['overall_total']) %>%</td>
-                </tr>
-                <tr>
-                    <td>Pro <% if (obj.leader == '503' ) { %>✔<% } %></td>
-                    <td class="right"><%= addCommas(obj['503_total']) %></td>
-                    <td class="right"><%= getPercentage(obj['503_total'], obj['overall_total']) %>%</td>
-                </tr>
-                <tr>
-                    <td>AyL <% if (obj.leader == '187' ) { %>✔<% } %></td>
-                    <td class="right"><%= addCommas(obj['187_total']) %></td>
-                    <td class="right"><%= getPercentage(obj['187_total'], obj['overall_total']) %>%</td>
-                </tr>
-                <tr>
-                    <td>FIT <% if (obj.leader == '505' ) { %>✔<% } %></td>
-                    <td class="right"><%= addCommas(obj['505_total']) %></td>
-                    <td class="right"><%= getPercentage(obj['505_total'], obj['overall_total']) %>%</td>
-                </tr>
-                <tr>
-                    <td>CP <% if (obj.leader == '506' ) { %>✔<% } %></td>
-                    <td class="right"><%= addCommas(obj['506_total']) %></td>
-                    <td class="right"><%= getPercentage(obj['506_total'], obj['overall_total']) %>%</td>
-                </tr>
+            <% for(var list in obj.votos) { %>
+               <tr>
+               <td>
+                <%= getName(listNames, list) %> <% if (getLeader(obj)[0] == list ) { %>✔<% } %>
+               </td>
+                <td class="right"><%= addCommas(obj.votos[list]) %></td>
+                <td class="right"><%= getPercentage(obj.votos[list], obj['overall_total']) %>%</td>
+               </tr>
+            <% } %>
             </tbody>
         </table>
     </div>

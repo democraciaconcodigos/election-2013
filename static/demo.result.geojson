@@ -1,6 +1,5 @@
 {
 "type": "FeatureCollection",
-                                                                                
 "features": [{
     "type": "Feature",
     "id": 4636,
@@ -10,16 +9,31 @@
             "507": 200
         },
         "overall_total": 2151,
-        "list_names": {
-            "501": "FPV",
-            "507": "FIT"
-        },
         "seccion": "1",
         "direccion": "AV SAN JUAN 353",
         "establecim": "ESC N°26 HIPOLITO YRIGOYEN",
         "fake_id": "1-10",
         "circuito": "1"
     },
-"geometry": { "type": "Point", "coordinates": [ -64.189654456840955, -31.414637452814794 ] }
-}]
+    "geometry": { "type": "Point", "coordinates": [ -64.189654456840955, -31.414637452814794 ] }
+},
+{
+    "type": "Feature",
+    "id": 4637,
+    "properties": {
+        "votos": {
+            "501": 120,
+            "507": 900
+        },
+        "overall_total": 1020,
+        "seccion": "2",
+        "direccion": "AV SAN JUAN 353",
+        "establecim": "ESC N°27 Gonzalo ALmeida",
+        "fake_id": "1-11",
+        "circuito": "1"
+    },
+    "geometry": { "type": "Point", "coordinates": [ -64.480212, -32.186157499999986 ] }
+}
+
+]
 }

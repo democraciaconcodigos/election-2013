@@ -1,90 +1,165 @@
-var addCommas = function (nStr) {
-        nStr += '';
-        x = nStr.split('.');
-        x1 = x[0];
-        x2 = x.length > 1 ? '.' + x[1] : '';
-        var rgx = /(\d+)(\d{3})/;
-        while (rgx.test(x1)) {
-            x1 = x1.replace(rgx, '$1' + ',' + '$2');
+function getName(listName, name) {
+    if (name in listName) {
+        return listName[name][0];
+    }
+    return name;
+}
+
+function getColor(listName, name) {
+    if (name in listName) {
+        return listName[name][1];
+    }
+    return "red";
+}
+
+function getLeader(data) {
+    var votes = data['votos'];
+    var leader = "";
+    var leaderVotes = 0;
+    var leaderMargin = 0;
+    var secondLeaderVotes = 0;
+    for(var propt in votes) {
+        if(!leader) {
+            leader = propt;
+            leaderVotes = votes[propt];
+            leaderMargin = leaderVotes;
         }
-        return x1 + x2;
-    };
-    function titleCase(str) {
-        var str = str.toLowerCase();
-        return str.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
-    };
-    function getPercentage(value, total) {
-        return ((value/total)*100).toFixed(1);
+        if(votes[propt] > leaderVotes) {
+            leader = propt;
+            secondLeaderVotes = leaderVotes;
+            leaderVotes = votes[propt];
+        }
+        else if(votes[propt] > secondLeaderVotes && leader !== propt) {
+            secondLeaderVotes = votes[propt];
+        }
+        leaderMargin = leaderVotes - secondLeaderVotes;
+    }
+    return [leader, leaderVotes, leaderMargin];
+}
+
+function getTotalData(schools, listNames) {
+    result = {};
+    resultList = [];
+    total = 0;
+    for(var propt in listNames){
+        result[propt] = [0, 0];
     }
 
-    var $width = $(window).width();
-    var center = [initialLat, initialLon];
-    var zoom = 8;
-
-    if ($width <= 767) {
-        center = [initialLat, initialLon];
-        zoom = 7;
+    for(i=0; i < schools.length; i++) {
+        var school = schools[i]['properties'];
+        for(var prop in listNames) {
+            result[prop][0] += school['votos'][prop];
+        }
+        total += school['overall_total'];
     }
 
-    if ($width <= 479) {
-        zoom = 7;
+    for(var prope in listNames) {
+        result[prope][1] = getPercentage(result[prope][0], total);
+        resultList.push([prope, result[prope][0], result[prope][1]]);
     }
 
-    var map = L.map('map', {
-        zoomControl: false,
-        minZoom: 8
-    }).setView(center, zoom);
-    // Base tiles
-    var mapquestLayer = new L.TileLayer('http://{s}.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.png', {
-        maxZoom: 18,
-        attribution: 'Data, imagery and map information provided by <a href="http://open.mapquest.co.uk" target="_blank">MapQuest</a>,<a href="http://www.openstreetmap.org/" target="_blank">OpenStreetMap</a> and contributors.',
-        subdomains: ['otile1','otile2','otile3','otile4']
+    resultList.sort(function(a, b) {
+        return a[1] <= b[1];
     });
-    map.addLayer(mapquestLayer);
+    return resultList;
+}
 
-    // Styling tricks
-    var radiusConstant = 0.5;
-    var getRadius = function(value) {
-        return Math.sqrt(value)*radiusConstant;
-    };
 
-    var list2color = {
-        '501': '#50ade6', // light blue
-        '502': '#6eb440', // green
-        '503': '#ffda00'  // yellow
+var addCommas = function (nStr) {
+    nStr += '';
+    x = nStr.split('.');
+    x1 = x[0];
+    x2 = x.length > 1 ? '.' + x[1] : '';
+    var rgx = /(\d+)(\d{3})/;
+    while (rgx.test(x1)) {
+        x1 = x1.replace(rgx, '$1' + ',' + '$2');
+    }
+    return x1 + x2;
+};
+
+function titleCase(str) {
+    if (!str) {
+        return "";
+    }
+    result = str.toLowerCase();
+    return result.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
+}
+
+function getPercentage(value, total) {
+    return ((value/total)*100).toFixed(1);
+}
+
+var $width = $(window).width();
+var center = [initialLat, initialLon];
+var zoom = 8;
+
+if ($width <= 767) {
+    center = [initialLat, initialLon];
+    zoom = 7;
+}
+
+if ($width <= 479) {
+    zoom = 7;
+}
+
+var map = L.map('map', {
+    zoomControl: false,
+    minZoom: 8
+}).setView(center, zoom);
+// Base tiles
+var mapquestLayer = new L.TileLayer('http://{s}.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.png', {
+    maxZoom: 18,
+    attribution: 'Data, imagery and map information provided by <a href="http://open.mapquest.co.uk" target="_blank">MapQuest</a>,<a href="http://www.openstreetmap.org/" target="_blank">OpenStreetMap</a> and contributors.',
+    subdomains: ['otile1','otile2','otile3','otile4']
+});
+map.addLayer(mapquestLayer);
+
+// Styling tricks
+var radiusConstant = 0.5;
+var getRadius = function(value) {
+    return Math.sqrt(value)*radiusConstant;
+};
+
+// Fire off to get our GeoJSON
+$.getJSON(geoJsonUrl, function(response) {
+    //MAP STUFF
+    // Pull in the circle layer from GeoJSON
+    var circleLayer = L.geoJson(response, {
+        pointToLayer: function (feature, latlng) {
+            var leaderData = getLeader(feature['properties']);
+            var marker = new L.circleMarker(latlng, {
+                fillColor: getColor(listNames, leaderData[0]),
+                color: getColor(listNames, leaderData[0]),
+                fillOpacity: 0.5,
+                weight: 1
+        })
+        .setRadius(getRadius(leaderData[2]))
+        .bindPopup(_.template($("#template-popup").html(), feature.properties)
+        );
+        return marker;
+        }
+    });
+    // Set the default data layer that will load with the map
+    map.addLayer(circleLayer);
+    // Add a little headline in there too
+    $(".leaflet-control-layers-list").prepend("<h3>Data styles</h3>");
+    // Add the zoom control in the upper right
+    new L.Control.Zoom({position: "topright"}).addTo(map);
+
+
+    //Modal Stuff
+    var schools = response["features"];
+    var result = getTotalData(schools, listNames);
+    var i = 0;
+
+    for(i=0; i<result.length; i++) {
+        if(i < 4) {
+            var party = result[i];
+            var html = "<div class='party'>" +"<div style='background-color:"+getColor(listNames, party[0]) +"' class='name "+party[0]+"'>" + (i+1) +" " + getName(listNames, party[0])+"</div>" +
+                "<div class='percent'>&nbsp;&nbsp;"+party[2]+"%</div>" +
+                "<div class='votes'>"+ party[1] +"votes</div></div>";
+            $(".legend").append(html);
+        }
     }
 
-    var list2abbrev = {
-        '501': 'FpV',
-        '502': 'UNEN',
-        '503': 'Pro'
-    };
-
-    // Fire off to get our GeoJSON
-    $.getJSON(geoJsonUrl, function(response) {
-
-        // Pull in the circle layer from GeoJSON
-        var circleLayer = L.geoJson(response, {
-            pointToLayer: function (feature, latlng) {
-                var marker = new L.circleMarker(latlng, {
-                    fillColor: list2color[feature.properties['leader']],
-                    color: list2color[feature.properties['leader']],
-                    fillOpacity: 0.5,
-                    weight: 1
-                })
-                .setRadius(getRadius(feature.properties['margin_of_victory']))
-                .bindPopup(_.template($("#template-popup").html(), feature.properties)
-                );
-                return marker;
-            }
-        });
-
-        // Set the default data layer that will load with the map
-        map.addLayer(circleLayer);
-
-        // Add a little headline in there too
-        $(".leaflet-control-layers-list").prepend("<h3>Data styles</h3>");
-
-        // Add the zoom control in the upper right
-        new L.Control.Zoom({position: "topright"}).addTo(map);
-    });
+});
