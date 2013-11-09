@@ -48,7 +48,12 @@ function getTotalData(schools, listNames) {
     for(i=0; i < schools.length; i++) {
         var school = schools[i]['properties'];
         for(var prop in listNames) {
-            result[prop][0] += school['votos'][prop];
+            if(school['votos'][prop]) {
+                console.log(prop);
+                result[prop][0] += school['votos'][prop];
+            }
+            // console.log(school['votos'][prop]);
+
         }
         total += school['overall_total'];
     }
@@ -59,8 +64,9 @@ function getTotalData(schools, listNames) {
     }
 
     resultList.sort(function(a, b) {
-        return a[1] <= b[1];
+        return b[1]-a[1];
     });
+    console.log(resultList);
     return resultList;
 }
 
