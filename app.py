@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from flask import Flask
 from flask import render_template
 app = Flask(__name__)
@@ -9,11 +10,9 @@ def index():
         headline = "Resultados Hackaton 2013 Cordoba",
         pubdate = "Nov. 9, 2013",
         description = """
-<p>The results of October's deputies election at the schools where
-Capital Federal voters cast ballots.</p>
+<p>Los resultados de las elecciones de diputados de Octubre en las escuelas donde los ciudadanos de Cordoba votaron </p>
 
-<p>Circles are colored in to represent
-that party that won the most votes and sized to show the margin of victory.</p>
+<p>Los circulos son de color para representar a ese partido que obtuvo la mayoria de votos y de tamanio para mostrar el margen de victoria..</p>
 """,
         about = """
 <p>
