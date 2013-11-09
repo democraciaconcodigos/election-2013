@@ -18,7 +18,7 @@ class PalmeroFTW(object):
     #location_json_path = "./input/DEMO_locales_cba_paso2013.geojson"
 
     listas = [
-        '3',
+        '003',
         '47',
         '191',
         '217',
@@ -132,7 +132,7 @@ class PalmeroFTW(object):
             # Load in the lists in the same "alphabetical" order
             for list_, total in sorted(totals.items(), key=lambda x:x[0]):
                 outrow.append(int(total))
-            # Load in the extra stuff we've calculated
+                # Load in the extra stuff we've calculated
             outrow.append(int(overall_total))
             # Add this row to the global list outside the loop
             outrows.append(outrow)
