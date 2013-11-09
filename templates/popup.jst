@@ -5,14 +5,14 @@
         <table>
             <thead>
                 <th>Party</th>
-                <th class="right">Votes</th>
-                <th class="right">Pct.</th>
+                <th class="right">Vot0s</th>
+                <th class="right">Pctg.</th>
             </thead>
             <tbody>
             <% for(var list in obj.votos) { %>
                <tr>
                <td>
-                <%= listNames[list] %> <% if (getLeader(obj)[0] == list ) { %>✔<% } %>
+                <%= getName(listNames, list) %> <% if (getLeader(obj)[0] == list ) { %>✔<% } %>
                </td>
                 <td class="right"><%= addCommas(obj.votos[list]) %></td>
                 <td class="right"><%= getPercentage(obj.votos[list], obj['overall_total']) %>%</td>
