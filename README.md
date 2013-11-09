@@ -21,7 +21,7 @@ $ . bin/activate
 Clone the repository.
 
 ```bash
-$ git clone git@github.com:palermo-hollywood/election-2013.git repo
+$ git clone git@github.com:democraciaconcodigos/election-2013.git repo
 ```
 
 Jump into it.
@@ -33,7 +33,7 @@ $ cd repo
 Install the other Python dependencies.
 
 ```bash
-$ pip install -r requirements
+$ pip install -r requirements.txt
 ```
 
 Fire up the Flask server that hosts our development pages.
