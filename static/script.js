@@ -1,17 +1,15 @@
-//find a way to assing colors on the fly!
-function setColors(listNames) {
-    result = {};
-    for(var propt in listNames){
-        result[propt] = "red";
-    }
-    return result;
-}
-
 function getName(listName, name) {
     if (name in listName) {
-        return listName[name];
+        return listName[name][0];
     }
     return name;
+}
+
+function getColor(listName, name) {
+    if (name in listName) {
+        return listName[name][1];
+    }
+    return "red";
 }
 
 function getLeader(data) {
@@ -38,6 +36,34 @@ function getLeader(data) {
     }
     return [leader, leaderVotes, leaderMargin];
 }
+
+function getTotalData(schools, listNames) {
+    result = {};
+    resultList = [];
+    total = 0;
+    for(var propt in listNames){
+        result[propt] = [0, 0];
+    }
+
+    for(i=0; i < schools.length; i++) {
+        var school = schools[i]['properties'];
+        for(var prop in listNames) {
+            result[prop][0] += school['votos'][prop];
+        }
+        total += school['overall_total'];
+    }
+
+    for(var prope in listNames) {
+        result[prope][1] = getPercentage(result[prope][0], total);
+        resultList.push([prope, result[prope][0], result[prope][1]]);
+    }
+
+    resultList.sort(function(a, b) {
+        return a[1] <= b[1];
+    });
+    return resultList;
+}
+
 
 var addCommas = function (nStr) {
     nStr += '';
@@ -94,19 +120,16 @@ var getRadius = function(value) {
     return Math.sqrt(value)*radiusConstant;
 };
 
-colorList = setColors(listNames);
 // Fire off to get our GeoJSON
 $.getJSON(geoJsonUrl, function(response) {
-
-    //get parties and assign colors
-
+    //MAP STUFF
     // Pull in the circle layer from GeoJSON
     var circleLayer = L.geoJson(response, {
         pointToLayer: function (feature, latlng) {
             var leaderData = getLeader(feature['properties']);
             var marker = new L.circleMarker(latlng, {
-                fillColor: colorList[leaderData[0]],
-                color: colorList[leaderData[0]],
+                fillColor: getColor(listNames, leaderData[0]),
+                color: getColor(listNames, leaderData[0]),
                 fillOpacity: 0.5,
                 weight: 1
         })
@@ -116,13 +139,27 @@ $.getJSON(geoJsonUrl, function(response) {
         return marker;
         }
     });
-
     // Set the default data layer that will load with the map
     map.addLayer(circleLayer);
-
     // Add a little headline in there too
     $(".leaflet-control-layers-list").prepend("<h3>Data styles</h3>");
-
     // Add the zoom control in the upper right
     new L.Control.Zoom({position: "topright"}).addTo(map);
+
+
+    //Modal Stuff
+    var schools = response["features"];
+    var result = getTotalData(schools, listNames);
+    var i = 0;
+
+    for(i=0; i<result.length; i++) {
+        if(i < 4) {
+            var party = result[i];
+            var html = "<div class='party'>" +"<div style='background-color:"+getColor(listNames, party[0]) +"' class='name "+party[0]+"'>" + (i+1) +" " + getName(listNames, party[0])+"</div>" +
+                "<div class='percent'>&nbsp;&nbsp;"+party[2]+"%</div>" +
+                "<div class='votes'>"+ party[1] +"votes</div></div>";
+            $(".legend").append(html);
+        }
+    }
+
 });
