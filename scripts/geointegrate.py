@@ -61,7 +61,7 @@ for entry in geocode_list:
 print 'Added new {0} entries.'.format(len(unknown))
 
 # Write new JSON
-output_filename = 'data/locales_cordoba_geocode.geojson'
+output_filename = 'input/locales_cordoba_geocode.geojson'
 output_file = open(output_filename, 'w')
 """geojson = {'type': 'FeaturesCollection',
            'features': output_list }"""
