@@ -1,0 +1,25 @@
+{
+"type": "FeatureCollection",
+                                                                                
+"features": [{
+    "type": "Feature",
+    "id": 4636,
+    "properties": {
+        "votos": {
+            "501": 620,
+            "507": 200
+        },
+        "overall_total": 2151,
+        "list_names": {
+            "501": "FPV",
+            "507": "FIT"
+        },
+        "seccion": "1",
+        "direccion": "AV SAN JUAN 353",
+        "establecim": "ESC N°26 HIPOLITO YRIGOYEN",
+        "fake_id": "1-10",
+        "circuito": "1"
+    },
+"geometry": { "type": "Point", "coordinates": [ -64.189654456840955, -31.414637452814794 ] }
+}]
+}
