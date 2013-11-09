@@ -14,8 +14,8 @@ class PalmeroFTW(object):
     primary_csv_path = "./input/votos_establecimiento_caba_paso.csv"
     general_csv_path = "./input/votos_establecimiento_cordoba_octubre.csv"
     location_json_path = "./input/locales_caba_paso2013.geojson"
-#    location_json_path = "./input/escuelas.finales.972.json"
-    location_json_path = "./input/DEMO_locales_cba_paso2013.geojson"
+    location_json_path = "./input/escuelas.finales.972.json"
+    #location_json_path = "./input/DEMO_locales_cba_paso2013.geojson"
 
     listas = [
         '3',
@@ -27,8 +27,6 @@ class PalmeroFTW(object):
         '505',
         '512',
         '514',
-        '9001',
-        '9002',
         '9003',
         '9004',
         '9005',
