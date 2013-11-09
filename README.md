@@ -33,7 +33,7 @@ $ cd repo
 Install the other Python dependencies.
 
 ```bash
-$ pip install -r requirements
+$ pip install -r requirements.txt
 ```
 
 Fire up the Flask server that hosts our development pages.
