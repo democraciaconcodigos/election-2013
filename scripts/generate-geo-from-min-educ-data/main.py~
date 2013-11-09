@@ -1,0 +1,18 @@
+import csv
+import sys
+
+if __name__ == '__main__':
+    min_educ_fname = sys.argv[1]
+    com_nac_electoral_fname = sys.argv[2]
+    
+    min_educ_data = csv.reader(open(min_educ_fname, 'rU'), delimiter=',')
+    com_nac_electoral_data = csv.reader(open(com_nac_electoral_fname, 'rU'), delimiter=',')
+
+    i = 0
+
+    for school in com_nac_electoral_data:
+        i += 1
+        print i, school[0], school[11]
+
+    
+sys.exit(0)
