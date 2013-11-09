@@ -43,8 +43,7 @@ class PalmeroFTW(object):
 #        '503', # Allanza Union Pro (Yellow)
 #        '505', # Allanza Fet. de Izq.y de los Trabajadores (red)
 #        '506', # Allanza Camino Popular (Gray)
-        'overall_total',
-    ] + listas
+    ] + listas + ['overall_total']
 
     outcsv_path = "output/merged_totals.csv"
     outjson_path = "output/merged_totals.geojson"
