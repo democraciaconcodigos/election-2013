@@ -16,10 +16,8 @@ def index():
 """,
         about = """
 <p>
-    This is a modified take on <a href="http://www.lanacion.com.ar/1633333-como-fueron-los-resultados-de-las-elecciones-en-la-escuela-donde-votaste">a map</a> published by <em>La Nacion</em>
-    last week.
-    It was developed by Team Hollywood Palermo at <a href="http://blogs.lanacion.com.ar/datafest/">Datafest 2013</a> in Buenos Aires.
-    The source is <a href="https://github.com/palermo-hollywood/election-2013">available on GitHub</a>.
+    This is the test map taken from <a href="http://blogs.lanacion.com.ar/datafest/">Datafest 2013</a>.
+    The source is <a href="http://palermo-hollywood.github.io/election-2013/">available on GitHub</a>.
 </p>
 """,
     initial_lat=-31.94284,
