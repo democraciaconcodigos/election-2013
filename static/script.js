@@ -49,11 +49,8 @@ function getTotalData(schools, listNames) {
         var school = schools[i]['properties'];
         for(var prop in listNames) {
             if(school['votos'][prop]) {
-                console.log(prop);
                 result[prop][0] += school['votos'][prop];
             }
-            // console.log(school['votos'][prop]);
-
         }
         total += school['overall_total'];
     }
@@ -66,7 +63,6 @@ function getTotalData(schools, listNames) {
     resultList.sort(function(a, b) {
         return b[1]-a[1];
     });
-    console.log(resultList);
     return resultList;
 }
 
@@ -132,6 +128,7 @@ $.getJSON(geoJsonUrl, function(response) {
     // Pull in the circle layer from GeoJSON
     var circleLayer = L.geoJson(response, {
         pointToLayer: function (feature, latlng) {
+            console.log(feature);
             var leaderData = getLeader(feature['properties']);
             var marker = new L.circleMarker(latlng, {
                 fillColor: getColor(listNames, leaderData[0]),
@@ -159,7 +156,7 @@ $.getJSON(geoJsonUrl, function(response) {
     var i = 0;
 
     for(i=0; i<result.length; i++) {
-        if(i < 4) {
+        if(i < 3) {
             var party = result[i];
             var html = "<div class='party'>" +"<div style='background-color:"+getColor(listNames, party[0]) +"' class='name "+party[0]+"'>" + (i+1) +" " + getName(listNames, party[0])+"</div>" +
                 "<div class='percent'>&nbsp;&nbsp;"+party[2]+"%</div>" +
