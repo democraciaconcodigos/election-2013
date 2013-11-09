@@ -155,7 +155,7 @@ $.getJSON(geoJsonUrl, function(response) {
     var i = 0;
 
     for(i=0; i<result.length; i++) {
-        if(i < 3) {
+        if(i < 6) {
             var party = result[i];
             var html = "<div class='party'>" +"<div style='background-color:"+getColor(listNames, party[0]) +"' class='name "+party[0]+"'>" + (i+1) +" " + getName(listNames, party[0])+"</div>" +
                 "<div class='percent'>&nbsp;&nbsp;"+party[2]+"%</div>" +
