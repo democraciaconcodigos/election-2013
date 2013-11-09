@@ -89,9 +89,9 @@ class PalmeroFTW(object):
                     'fake_id': results_data['fake_id'],
                 }
             }
-            merged_dict["votos"] = {}
+            merged_dict['properties']["votos"] = {}
             for party in self.listas:
-                merged_dict["votos"][party] = int(results_data[party])
+                merged_dict['properties']["votos"][party] = int(results_data[party])
 
             # Toss it in the global list
             merged_features.append(merged_dict)
