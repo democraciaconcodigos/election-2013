@@ -1,6 +1,5 @@
-![don't hate](static/screenshot.png)
 
-Resultados de las Oct. 2013 Buenos Aires elecciones. Live at [http://palermo-hollywood.github.io/election-2013/](http://palermo-hollywood.github.io/election-2013/)
+Resultados por escuelas de las elecciones Argentina Octubre 2013
 
 Getting started
 ---------------
@@ -50,9 +49,9 @@ To flatten the Flask site so it can be hosted without a server as static files.
 $ python freeze.py
 ```
 
-Who to blame
+Heavily Based On The work of 
 ------------
 
-![don't hate](static/sign.jpg)
+https://github.com/palermo-hollywood/election-2013
 
-This code was developed at Data Fest 2013 in Buenos Aires by Team Palermo Hollywood.
+This code was developed at Córdoba, Argentina By the Geolocalization Team 
