@@ -94,7 +94,9 @@ for key, result in sorted_results:
     if result['vot_parcodigo'] not in [9001, 9002]:
         mesa_desde = result['mesa_desde']
         mesa_hasta = result['mesa_hasta']
-        vot_parcodigo = result['vot_parcodigo']
+        #vot_parcodigo = result['vot_parcodigo']
+        # fill with zeros:
+        vot_parcodigo = str(result['vot_parcodigo']).rjust(3, '0')
         total = result['total']
         
         row = [mesa_desde,mesa_hasta,vot_parcodigo,total]
