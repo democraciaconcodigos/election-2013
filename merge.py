@@ -14,7 +14,8 @@ class PalmeroFTW(object):
     primary_csv_path = "./input/votos_establecimiento_caba_paso.csv"
     general_csv_path = "./input/votos_establecimiento_cordoba_octubre.csv"
     location_json_path = "./input/locales_caba_paso2013.geojson"
-    location_json_path = "./input/escuelas.finales.972.json"
+#    location_json_path = "./input/escuelas.finales.972.json"
+    location_json_path = "./input/DEMO_locales_cba_paso2013.geojson"
 
     listas = [
         '3',
@@ -42,8 +43,7 @@ class PalmeroFTW(object):
 #        '503', # Allanza Union Pro (Yellow)
 #        '505', # Allanza Fet. de Izq.y de los Trabajadores (red)
 #        '506', # Allanza Camino Popular (Gray)
-        'overall_total',
-    ] + listas
+    ] + listas + ['overall_total']
 
     outcsv_path = "output/merged_totals.csv"
     outjson_path = "output/merged_totals.geojson"
@@ -87,11 +87,12 @@ class PalmeroFTW(object):
                     'circuito': row['properties']['circuito'],
                     'overall_total': int(results_data['overall_total']),
                     'fake_id': results_data['fake_id'],
-                }
+                },
+                'type': 'Feature'
             }
-            merged_dict["votos"] = {}
+            merged_dict['properties']["votos"] = {}
             for party in self.listas:
-                merged_dict["votos"][party] = int(results_data[party])
+                merged_dict['properties']["votos"][party] = int(results_data[party])
 
             # Toss it in the global list
             merged_features.append(merged_dict)
