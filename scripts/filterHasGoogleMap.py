@@ -26,13 +26,14 @@ def generateCapitalCSV(filepath):
     outFile = name + '.capital.csv'
 
     csvList = fileToCSVListCapital(filepath)
+
     with open(outFile,'wb') as csvFile:
         writer = csv.writer(csvFile, delimiter=',', quotechar='"', quoting=csv.QUOTE_ALL)
         writer.writerows(csvList)
 
 known = ['CAPITAL','RIO CUARTO','VILLA MARIA','RIO TERCERO','ONCATIVO','OLIVA','VILLA CARLOS PAZ',
          'UNQUILLO','MENDIOLAZA', 'MARCOS JUAREZ','LABOULAYE','VICUÑA MACKENNA',
-         'MALVINAS ARGENTINAS','VILLA ALLENDE']:
+         'MALVINAS ARGENTINAS','VILLA ALLENDE']
 
 def tieneMapa(city):
     if city in known:
@@ -48,7 +49,15 @@ def fileToCSVListCapital(filepath):
     primeraLinea = reader.next()     # title line
     result = [primeraLinea]
     for line in reader:
-        if tieneMapa(line[9])
+        if tieneMapa(line[9]):
+            addr = line[6]
+            addr = addr.split('B\xc2\xb0')[0]
+            addr = " ".join(addr.split())
+            addr = addr.rstrip('-')
+            addr = addr.split('VILLA')[0]
+            addr = " ".join(addr.split())
+            addr = addr.rstrip('-')
+            line[6] = addr
             result.append(line)
     f.close()
     return result

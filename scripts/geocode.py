@@ -46,6 +46,7 @@ def queryGeocode(address):
     j = json.loads(x)
     lat = j['results'][0]['geometry']['location']['lat']
     lng = j['results'][0]['geometry']['location']['lng']
+
     return (lat,lng)
 
 
@@ -62,8 +63,12 @@ def fileToCSVList(filepath):
     for line in reader:
         addr = lineToAddress(line)
         id   = line[0]
-        (lat,lng) = queryGeocode(addr)
-        result.append((id,lat,lng))
+        try:
+            (lat,lng) = queryGeocode(addr)
+            print (id, lat, lng)
+            result.append((id,lat,lng))
+        except:
+            print "Google error with address: " + addr
     f.close()
     return result
 
