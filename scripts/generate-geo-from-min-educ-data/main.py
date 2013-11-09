@@ -1,18 +1,20 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+__authors__ = 'Carlos de la Torre, Andrés Blanco'
 
-__author__ = 'Andrés Blanco'
+"""
+This script uses data from the Ministerio de Educación de la Provincia de Córdoba
+and data from the Dirección Nacional Electoral, and tries to assign lat/lon coordinates
+to the schools in the DNE.
+
+"""
 
 import sys
 from geo_from_min_edu_data import *
 
-#min_educ_fname = sys.argv[1]
-#com_nac_electoral_fname = sys.argv[2]
-#output = sys.argv[3]
-
-min_educ_fname = 'test_data/80269-escuelas-de-cordoba-geolocalizadas.csv'
-com_nac_electoral_fname = 'test_data/80268-escuelas-segun-la-dne.csv'
-output = 'out.csv'
+min_educ_fname = sys.argv[1]
+com_nac_electoral_fname = sys.argv[2]
+output = sys.argv[3]
 
 geo_processor = MinEducHelper(min_educ_fname)
 com_nac_electoral_data = csv.reader(open(com_nac_electoral_fname, 'rU'), delimiter=',')
