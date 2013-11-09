@@ -6,7 +6,7 @@
     "properties": {
         "votos": {
             "501": 620,
-            "507": 200
+            "504": 200
         },
         "overall_total": 2151,
         "seccion": "1",
@@ -23,7 +23,7 @@
     "properties": {
         "votos": {
             "501": 120,
-            "507": 900
+            "504": 900
         },
         "overall_total": 1020,
         "seccion": "2",
@@ -33,6 +33,24 @@
         "circuito": "1"
     },
     "geometry": { "type": "Point", "coordinates": [ -64.480212, -32.186157499999986 ] }
+},
+{
+    "type": "Feature",
+    "id": 4638,
+    "properties": {
+        "votos": {
+            "501": 130,
+            "509": 900
+
+        },
+        "overall_total": 1020,
+        "seccion": "2",
+        "direccion": "AV SAN JUAN 353",
+        "establecim": "ESC N°27 Gonzalo ALmeida Norry",
+        "fake_id": "1-12",
+        "circuito": "1"
+    },
+    "geometry": { "type": "Point", "coordinates": [ -64.340953556725609, -31.340545503388675 ] }
 }
 
 ]

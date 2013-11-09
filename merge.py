@@ -15,9 +15,10 @@ class PalmeroFTW(object):
     general_csv_path = "./input/votos_establecimiento_cordoba_octubre.csv"
     location_json_path = "./input/locales_caba_paso2013.geojson"
     location_json_path = "./input/escuelas.finales.972.json"
+    #location_json_path = "./input/DEMO_locales_cba_paso2013.geojson"
 
     listas = [
-        '3',
+        '003',
         '47',
         '191',
         '217',
@@ -26,8 +27,6 @@ class PalmeroFTW(object):
         '505',
         '512',
         '514',
-        '9001',
-        '9002',
         '9003',
         '9004',
         '9005',
@@ -42,8 +41,7 @@ class PalmeroFTW(object):
 #        '503', # Allanza Union Pro (Yellow)
 #        '505', # Allanza Fet. de Izq.y de los Trabajadores (red)
 #        '506', # Allanza Camino Popular (Gray)
-        'overall_total',
-    ] + listas
+    ] + listas + ['overall_total']
 
     outcsv_path = "output/merged_totals.csv"
     outjson_path = "output/merged_totals.geojson"
@@ -87,11 +85,12 @@ class PalmeroFTW(object):
                     'circuito': row['properties']['circuito'],
                     'overall_total': int(results_data['overall_total']),
                     'fake_id': results_data['fake_id'],
-                }
+                },
+                'type': 'Feature'
             }
-            merged_dict["votos"] = {}
+            merged_dict['properties']["votos"] = {}
             for party in self.listas:
-                merged_dict["votos"][party] = int(results_data[party])
+                merged_dict['properties']["votos"][party] = int(results_data[party])
 
             # Toss it in the global list
             merged_features.append(merged_dict)
@@ -133,7 +132,7 @@ class PalmeroFTW(object):
             # Load in the lists in the same "alphabetical" order
             for list_, total in sorted(totals.items(), key=lambda x:x[0]):
                 outrow.append(int(total))
-            # Load in the extra stuff we've calculated
+                # Load in the extra stuff we've calculated
             outrow.append(int(overall_total))
             # Add this row to the global list outside the loop
             outrows.append(outrow)

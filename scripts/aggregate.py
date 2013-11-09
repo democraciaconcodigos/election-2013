@@ -16,12 +16,12 @@ Output:
 
 import csv
 
-input_filename_results = 'data/80222-solo-cba-resultados-diputados-nacionales.csv'
-results_file = open(input_filename_results)
+results_input_filename = 'data/80222-solo-cba-resultados-diputados-nacionales.csv'
+results_file = open(results_input_filename)
 results_csvreader = csv.reader(results_file)
 
-input_filename_locals ='data/80268-escuelas-segun-la-dne.csv'
-locals_file = open(input_filename_locals)
+locals_input_filename ='data/80268-escuelas-segun-la-dne.csv'
+locals_file = open(locals_input_filename)
 locals_csvreader = csv.reader(locals_file)
 
 locals = {}
@@ -90,13 +90,17 @@ header = header.split(',')
 csvwriter.writerow(header)
 
 for key, result in sorted_results:
-    mesa_desde = result['mesa_desde']
-    mesa_hasta = result['mesa_hasta']
-    vot_parcodigo = result['vot_parcodigo']
-    total = result['total']
-    
-    row = [mesa_desde,mesa_hasta,vot_parcodigo,total]
-    csvwriter.writerow(row)
+    # skip total numbers of voters:
+    if result['vot_parcodigo'] not in [9001, 9002]:
+        mesa_desde = result['mesa_desde']
+        mesa_hasta = result['mesa_hasta']
+        #vot_parcodigo = result['vot_parcodigo']
+        # fill with zeros:
+        vot_parcodigo = str(result['vot_parcodigo']).rjust(3, '0')
+        total = result['total']
+        
+        row = [mesa_desde,mesa_hasta,vot_parcodigo,total]
+        csvwriter.writerow(row)
 
 outf.close()
 
