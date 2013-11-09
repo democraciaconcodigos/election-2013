@@ -88,7 +88,8 @@ class PalmeroFTW(object):
                     'circuito': row['properties']['circuito'],
                     'overall_total': int(results_data['overall_total']),
                     'fake_id': results_data['fake_id'],
-                }
+                },
+                'type': 'Feature'
             }
             merged_dict['properties']["votos"] = {}
             for party in self.listas:
