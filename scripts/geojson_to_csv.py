@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 """
 "features": [ {
     "type": "Feature", 
@@ -24,26 +27,30 @@
     }
 }
 """
-
+import csv
+import json
 import codecs
-f = codecs.open('input/escuelas.final.972.json', encoding='utf8')
+f = codecs.open('input/escuelas.final.972.json', encoding='utf-8')
 j = json.load(f)
-g = codecs.open('output.csv', 'w', encoding='utf8')
-fieldnames = [u'latitude', u'longitude'] + j['features'][0]['properties'].keys()
+g = codecs.open('output2.csv', 'w', encoding='utf8')
+fieldnames = ['latitude', 'longitude'] + list(j['features'][0]['properties'].keys())
 writer = csv.DictWriter(g, fieldnames)
 
-for d in j['features']:
-    d2 = {}
-    for p in props:
-        d2[p] = d['properties'][p]
-    d2[u'longitude'] = d['geometry']['coordinates'][1]
-    d2[u'latitude'] = d['geometry']['coordinates'][0]
-    d3 = {}
-    for x in d2:
-        if isinstance(d2[x], unicode):
-            d3[x] = codecs.encode(d2[x], 'utf8')
-        else:
-            d3[x] = d2[x]
-            
-    writer.writerow(d3)
+props = j['features'][0]['properties'].keys()
 
+
+def main():
+    for d in j['features']:
+        d2 = {}
+        for p in props:     
+            d2[p] = d['properties'][p]
+        d2['longitude'] = d['geometry']['coordinates'][1]
+        d2['latitude'] = d['geometry']['coordinates'][0]
+        d3 = {}
+        for x in d2:   
+             d3[x] = d2[x]
+        writer.writerow(d3)
+
+
+if __name__ == '__main__':
+    main()

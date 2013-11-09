@@ -12,7 +12,7 @@ def index():
         description = """
 <p>Los resultados de las elecciones de diputados de Octubre en las escuelas donde los ciudadanos de Cordoba votaron </p>
 
-<p>Los circulos son de color para representar a ese partido que obtuvo la mayoria de votos y de tamanio para mostrar el margen de victoria..</p>
+<p>Cada circulo representa una escuela y el color representa al partido que obtuvo la mayoria de votos en esa escuela.</p>
 """,
         about = """
 <p>
