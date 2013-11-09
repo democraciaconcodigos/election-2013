@@ -198,7 +198,7 @@
         .about p {
            font-size: 11px !important;
            line-height:13px !important;
-        } 
+        }
        .pro {
             background-color: #ffda00;
         }
@@ -352,21 +352,21 @@
     }
 
     var $width = $(window).width();
-    var center = [-34.618234674892, -58.503570556640625];
-    var zoom = 12;
+    var center = [{{initial_lat}}, {{initial_lon}}];
+    var zoom = 8;
 
     if ($width <= 767) {
-        center = [-34.608627779881566, -58.450698852539055];
-        zoom = 12;
+        center = [{{initial_lat}}, {{initial_lon}}];
+        zoom = 7;
     }
 
     if ($width <= 479) {
-        zoom = 11;
+        zoom = 7;
     }
 
     var map = L.map('map', {
         zoomControl: false,
-        minZoom: 11
+        minZoom: 8
     }).setView(center, zoom);
     // Base tiles
     var mapquestLayer = new L.TileLayer('http://{s}.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.png', {

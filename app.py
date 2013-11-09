@@ -6,8 +6,8 @@ app = Flask(__name__)
 @app.route("/")
 def index():
     return render_template('index.html',
-        headline = "Resultados de las Oct. 2013 Buenos Aires elecciones",
-        pubdate = "Nov. 2, 2013",
+        headline = "Resultados Hackaton 2013 Cordoba",
+        pubdate = "Nov. 9, 2013",
         description = """
 <p>The results of October's deputies election at the schools where
 Capital Federal voters cast ballots.</p>
@@ -17,17 +17,19 @@ that party that won the most votes and sized to show the margin of victory.</p>
 """,
         about = """
 <p>
-    This is a modified take on <a href="http://www.lanacion.com.ar/1633333-como-fueron-los-resultados-de-las-elecciones-en-la-escuela-donde-votaste">a map</a> published by <em>La Nacion</em> 
+    This is a modified take on <a href="http://www.lanacion.com.ar/1633333-como-fueron-los-resultados-de-las-elecciones-en-la-escuela-donde-votaste">a map</a> published by <em>La Nacion</em>
     last week.
     It was developed by Team Hollywood Palermo at <a href="http://blogs.lanacion.com.ar/datafest/">Datafest 2013</a> in Buenos Aires.
     The source is <a href="https://github.com/palermo-hollywood/election-2013">available on GitHub</a>.
 </p>
-"""
+""",
+    initial_lat=-31.94284,
+    initial_lon=-63.599854
     )
 
 
 if __name__ == '__main__':
-  app.run( 
+  app.run(
         host="0.0.0.0",
         port=int("8000"),
         use_reloader=True,
