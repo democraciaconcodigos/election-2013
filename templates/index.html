@@ -122,7 +122,11 @@
     <script type="text/javascript">
     var initialLat = {{initial_lat}}
     var initialLon = {{initial_lon}}
-    var geoJsonUrl = "{{ url_for('static', filename='results.geojson') }}"
+    var geoJsonUrl = "{{ url_for('static', filename='demo.result.geojson') }}"
+    var listNames = {
+            "501": "FPV",
+            "507": "FIT"
+    }
     </script>
     <script type="text/javascript" src="{{ url_for('static', filename='script.js') }}">
     </script>
