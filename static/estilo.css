@@ -58,18 +58,6 @@
             border-radius: 5px;
         }
 
-	#boton {
-            font-family: 'Source Sans Pro', Helvetica, sans-serif;
-            position:absolute;
-            top:475px;
-	    float:left;
-            left:10px;
-            z-index: 1000;
-            max-width: 350px;
-            box-shadow: 0px 1px 7px rgba(0, 0, 0, 0.4);
-            border-radius: 5px;
-        }
-
         #text div {
             margin: 0 0 0 0;
         }
