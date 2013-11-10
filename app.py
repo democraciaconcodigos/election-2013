@@ -14,6 +14,7 @@ def index():
 
 <p>Cada circulo representa una escuela y el color representa al partido que obtuvo la mayoria de votos en esa escuela.</p>
 """,
+        disclaimer = """Los porcentajes y las cantidades pertenecen a los votos de 90% de las escuelas que estan geolocalizadas, hay un 10% que no esta representado y falta geolocalizar, es por eso que los numeros finales puede diferir de los del escrutinio provisorio""",
         about = """
 <p>
     This is the test map taken from <a href="http://blogs.lanacion.com.ar/datafest/">Datafest 2013</a>.
