@@ -159,7 +159,7 @@ $.getJSON(geoJsonUrl, function(response) {
             var party = result[i];
             var html = "<div class='party'>" +"<div style='background-color:"+getColor(listNames, party[0]) +"' class='name "+party[0]+"'>" + (i+1) +" " + getName(listNames, party[0])+"</div>" +
                 "<div class='percent'>&nbsp;&nbsp;"+party[2]+"%</div>" +
-                "<div class='votes'>"+ party[1] +"votes</div></div>";
+                "<div class='votes'>"+ addCommas(party[1]) +" votes</div></div>";
             $(".legend").append(html);
         }
     }
