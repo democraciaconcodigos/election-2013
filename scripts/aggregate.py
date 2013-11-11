@@ -15,9 +15,9 @@ Output:
 """
 
 import csv
+import json
 
-
-paso = True
+paso = False
 if paso:
     results_input_filename = 'data/80267-paso-por-cirduito-y-mesa.csv'
     output_filename = 'input/votos_establecimiento_cordoba_paso.csv'
@@ -114,4 +114,49 @@ for key, result in sorted_results:
         csvwriter.writerow(row)
 
 outf.close()
+
+
+#
+# Add special entry for not geolocalized schools
+#
+
+geojson_input_filename = 'input/locales_cordoba_geocode.geojson'
+geojson_input_file = open(geojson_input_filename)
+geojson_input = json.load(geojson_input_file)
+geomanual_list = geojson_input[u'features']
+known_mesa_desde = set()
+for entry in geomanual_list:
+    known_mesa_desde.add(int(entry[u'properties'][u'mesa_desde']))
+
+# read results
+#results_input_filename = 'input/votos_establecimiento_cordoba_octubre.csv'
+results_input_filename = output_filename
+results_file = open(results_input_filename)
+results_csvreader = csv.reader(results_file)
+
+results_csvreader.next()
+
+unknown = []
+result = {}
+for row in results_csvreader:
+    # mesa_desde,mesa_hasta,vot_parcodigo,total
+    mesa_desde = int(row[0])
+    if mesa_desde not in known_mesa_desde:
+        partido = row[2]
+        votos = int(row[3])
+        result[partido] = result.get(partido, 0) + votos
+        unknown.append(mesa_desde)
+
+results_file.close()
+
+# append results
+#results_output_filename = 'input/votos_establecimiento_cordoba_octubre.csv'
+results_output_filename = output_filename
+results_file = open(results_output_filename, 'a')
+results_csvwriter = csv.writer(results_file)
+
+for partido, votos in result.items():
+    results_csvwriter.writerow([0, 0, partido, votos])
+
+results_file.close()
 
