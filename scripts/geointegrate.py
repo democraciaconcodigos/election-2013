@@ -4,15 +4,20 @@ import csv
 import json
 
 # Read CSV with geocodes and build a dictionary:
-#geocode_input_filename = 'data/locations.csv'
-geocode_input_filename = 'data/80268-escuelas-segun-la-dne.capital.coords.csv'
-geocode_input_file = open(geocode_input_filename)
-geocode_csvreader = csv.reader(geocode_input_file)
-geocode_csvreader.next() # skip header
 geocodes = {}
-for row in geocode_csvreader:
-    id, latitude, longitude = row
-    geocodes[int(id)] = (float(latitude), float(longitude))
+duplicates = []
+for geocode_input_filename in ['data/80268-escuelas-segun-la-dne.capital.coords.csv', 'input/escuelas-DNE-con-GEO-del-MinEduc.csv']:
+    #geocode_input_filename = 'data/locations.csv'
+    #geocode_input_filename = 'data/80268-escuelas-segun-la-dne.capital.coords.csv'
+    geocode_input_file = open(geocode_input_filename)
+    geocode_csvreader = csv.reader(geocode_input_file)
+    geocode_csvreader.next() # skip header
+    for row in geocode_csvreader:
+        id, latitude, longitude = row
+        if int(id) in geocodes:
+            duplicates.append(int(id))
+        elif latitude and longitude:
+            geocodes[int(id)] = (float(latitude), float(longitude))
 
 
 # Read voting locals
@@ -59,6 +64,15 @@ for entry in geocode_list:
         unknown.add(i)
         geomanual_list.append(entry)
 print 'Added new {0} entries.'.format(len(unknown))
+
+"""
+# DON'T DO THIS AT HOME:
+f = open('input/known_schools.txt', 'w')
+for id in known_idset:
+    f.write('{0}\n'.format(id))
+for id in unknown:
+    f.write('{0}\n'.format(id))
+f.close()"""
 
 # Write new JSON
 output_filename = 'input/locales_cordoba_geocode.geojson'
