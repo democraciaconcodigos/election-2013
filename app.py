@@ -13,9 +13,7 @@ def index():
 <p>Resultados de las elecciones de diputados de Octubre en las escuelas a donde los ciudadanos de Córdoba votaron.</p>
 <p>Cada círculo representa una escuela y el color representa al partido que obtuvo la mayoría de votos en esa escuela.</p>
 """,
-        disclaimer = u"""Los resultados totales corresponden sólo a los votos de las escuelas que están geolocalizadas.
-                     Falta geolocalizar aproximadamente un 10% de las escuelas.
-                     Es por eso que los números totales pueden diferir de los del escrutinio oficial.""",
+        disclaimer ="""""",
         about = u"""
 <p>Este mapa fue realizado en el marco del <a href="http://democraciaconcodigos.github.io/">1er Hackatón Sobre Datos Públicos de Córdoba: Democracia con Códigos</a>.
 El código se encuentra disponible en <a href="https://github.com/democraciaconcodigos/election-2013">GitHub</a>.
