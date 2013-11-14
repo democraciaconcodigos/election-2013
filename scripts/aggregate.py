@@ -56,6 +56,7 @@ current_local = sorted_locals[current_local_index][1]
 
 results_csvreader.next()
 results = {}
+totals = {}
 for row in results_csvreader:
     # "codigo_provincia","codigo_departamento","codigo_circuito","codigo_mesa","codigo_votos","votos"
     codigo_mesa = int(row[3])
@@ -68,6 +69,7 @@ for row in results_csvreader:
     # claves: mesa_desde, voto_parcodigo:
     mesa_desde = current_local['mesa_desde']
     vot_parcodigo = int(row[4])
+    votos = int(row[5])
     key = (mesa_desde, vot_parcodigo)
     
     # result = results.get(key, {})    
@@ -84,9 +86,14 @@ for row in results_csvreader:
     result['mesa_desde'] = mesa_desde
     result['mesa_hasta'] = current_local['mesa_hasta']
     result['vot_parcodigo'] = vot_parcodigo
-    result['total'] = result.get('total', 0) + int(row[5])    
+    result['total'] = result.get('total', 0) + votos
     
     results[key] = result
+    
+    # totales:
+    totals[vot_parcodigo] = totals.get(vot_parcodigo, 0) + votos
+
+print 'Resultados totales: ', totals
 
 sorted_results = sorted(results.items(), key=lambda x: x[0])
 
@@ -112,20 +119,29 @@ for key, result in sorted_results:
         
         row = [mesa_desde,mesa_hasta,vot_parcodigo,total]
         csvwriter.writerow(row)
+        
+#
+# Add special school for total numbers (mesa_desde=0, mesa_hasta=0)
+#
+
+for partido, votos in totals.items():
+    # skip total numbers of voters:
+    if partido not in [9001, 9002]:
+        csvwriter.writerow([0, 0, partido, votos])
 
 outf.close()
 
-
+"""
 #
-# Add special entry for not geolocalized schools
+# Add dummy school for not geolocalized schools (mesa_desde=0, mesa_hasta=0)
 #
 
 geojson_input_filename = 'input/locales_cordoba_geocode.geojson'
 geojson_input_file = open(geojson_input_filename)
 geojson_input = json.load(geojson_input_file)
-geomanual_list = geojson_input[u'features']
+geojson_list = geojson_input[u'features']
 known_mesa_desde = set()
-for entry in geomanual_list:
+for entry in geojson_list:
     known_mesa_desde.add(int(entry[u'properties'][u'mesa_desde']))
 
 # read results
@@ -159,4 +175,61 @@ for partido, votos in result.items():
     results_csvwriter.writerow([0, 0, partido, votos])
 
 results_file.close()
+
+#
+# Results verification with dummy school:
+#
+
+def verify_results():
+    geojson_input_filename = 'input/locales_cordoba_geocode.geojson'
+    geojson_input_file = open(geojson_input_filename)
+    geojson_input = json.load(geojson_input_file)
+    geojson_list = geojson_input[u'features']
+    mesas = set([int(x['properties']['mesa_desde']) for x in geojson_list])
+    geojson_input_file.close()
+
+    results_file = open(results_input_filename)
+    results_csvreader = csv.reader(results_file)
+    results_csvreader.next()
+    
+    totals = {}
+    for row in results_csvreader:
+        if int(row[0]) in mesas:
+            totals[row[2]] = totals.get(row[2], 0) + int(row[3])
+    
+    results_file.close()
+    
+    return totals
+
+{'003': 440452,
+ '047': 61032,
+ '191': 89413,
+ '217': 41719,
+ '501': 296449,
+ '503': 280819,
+ '505': 145238,
+ '512': 515848,
+ '514': 72414,
+ '9003': 1386,
+ '9004': 24404,
+ '9005': 35520,
+ '9006': 753}
+"""
+
+#
+# Results verification with total school:
+#
+
+def verify_results():
+    fn = 'input/votos_establecimiento_cordoba_octubre.csv'
+    f = open(fn)
+    reader = csv.reader(f)
+    reader.next()
+
+    totals = {}
+    for row in reader:
+        if row[0] != '0':
+            totals[row[2]] = totals.get(row[2], 0) + int(row[3])
+
+    return totals
 

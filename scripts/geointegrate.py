@@ -85,7 +85,9 @@ dummy_school = {
                     "type": "Point", 
                     # Laguna Mar Chiquita :P
                     # http://maps.googleapis.com/maps/api/geocode/json?address=laguna+mar+chiquita&sensor=false&language=es&region=ar
-                    "coordinates": [ -30.4963614, -62.7323884 ] } }
+                    "coordinates": [ -30.4963614, -62.7323884 ] 
+                    #"coordinates": [ -64.189654456840955, -31.414637452814794 ]
+                    } }
 geocode_list.append(dummy_school)
 
 # Integrate with existing JSON

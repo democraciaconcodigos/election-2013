@@ -17,7 +17,7 @@ class PalmeroFTW(object):
 
     listas = [
         '003',
-        '47',
+        '047',
         '191',
         '217',
         '501',
