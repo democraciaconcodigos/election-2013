@@ -44,8 +44,10 @@ function getTotalData(schools, listNames) {
     for(var propt in listNames){
         result[propt] = [0, 0];
     }
-
-    for(i=0; i < schools.length; i++) {
+    
+    // XXX: only process last school that has the total numbers:
+    //for(i=0; i < schools.length; i++) {
+    for(i=schools.length-1; i < schools.length; i++) {
         var school = schools[i]['properties'];
         for(var prop in listNames) {
             if(school['votos'][prop]) {
