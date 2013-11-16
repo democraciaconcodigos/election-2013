@@ -56,15 +56,12 @@ class School(object):
         self.area = area  # Departamento
         self.province = province # Always CORDOBA in Min. Edu. data
         self.postal_code = postal_code
-        self.dne_id=dne_id
-        self.min_edu_id=min_edu_id
-        self.lat=lat
-        self.lon=lon
+        self.dne_id = dne_id
+        self.min_edu_id = min_edu_id
+        self.lat = lat
+        self.lon = lon
 
-        self.applied_filters = {
-            'name': 0,
-            'area': 0
-        }
+        self.applied_filters = {}
 
     def output_row(self, notes):
         return [self.dne_id, self.lat, self.lon]
@@ -91,7 +88,8 @@ class School(object):
                     return None
         # If this point is reached, then all the given schools are within the given threshold
         # then we just return a 'random' one.
-        if cnt: print "Avg distance: ", s*1.0 / cnt, cnt, " points"
+        if cnt:
+            print "Avg distance: ", s*1.0 / cnt, cnt, " points"
         return schools[0]
 
     def __str__(self):
@@ -104,17 +102,22 @@ class MinEducHelper(object):
         self.csv_reader = csv.reader(open(data_fname, 'rU'), delimiter=',')
         self.schools = []
         for school_data in self.csv_reader:
-            school = School(
-                min_edu_id=school_data[0],  # Min. Edu. ID
-                name=school_data[1],  # nombre
-                address=school_data[4],  # domicilio
-                city=school_data[7],  # localidad
-                area=school_data[8], # departamento
-                postal_code=school_data[5],  # cp
-                lat=school_data[10],  # lat
-                lon=school_data[11],  # lon
-            )
-            self.schools.append(school)
+            lat = school_data[10]
+            lon = school_data[11]
+            if lat and lon:
+                school = School(
+                    min_edu_id=school_data[0],  # Min. Edu. ID
+                    name=school_data[1],  # nombre
+                    address=school_data[4],  # domicilio
+                    city=school_data[7],  # localidad
+                    area=school_data[8], # departamento
+                    postal_code=school_data[5],  # cp
+                    lat=school_data[10],  # lat
+                    lon=school_data[11],  # lon
+                )
+                self.schools.append(school)
+            else:
+                print "Invalid lat/lon data:", school_data[1], school_data[0]
 
         self.schools_by_city = {}
         self.schools_by_area = {}
