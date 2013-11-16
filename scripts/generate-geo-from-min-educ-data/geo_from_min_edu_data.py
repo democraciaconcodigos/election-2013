@@ -4,6 +4,8 @@
 import csv
 import logging as log
 import math
+from collections import defaultdict
+
 
 DEPARTAMENTOS = {
     1: 'CAPITAL',
@@ -47,19 +49,24 @@ def euclidean_distance(lat_x, lon_x, lat_y, lon_y):
     return math.sqrt( math.pow(lat_x + lat_y, 2.0) + math.pow(lon_x + lon_y, 2.0))
 
 
+def normalize_str(s):
+    return s.strip().lower()
+
+
 class School(object):
-    def __init__(self, name='', address='', city='', area='', province='CORDOBA', postal_code='', dne_id=None,
-                 min_edu_id=None, lat=None, lon=None):
-        self.name = name
-        self.address = address
-        self.city = city
-        self.area = area  # Departamento
-        self.province = province # Always CORDOBA in Min. Edu. data
-        self.postal_code = postal_code
+    def __init__(self, name='', address='', city='', area='', postal_code='',
+                 province='CORDOBA', dne_id=None, min_edu_id=None, lat=None,
+                 lon=None):
+        self.name = normalize_str(name)
+        self.address = normalize_str(address)
+        self.city = normalize_str(city)
+        self.area = normalize_str(area)  # Departamento
+        self.province = normalize_str(province)  # Always CORDOBA in MinEdu.data
+        self.postal_code = normalize_str(postal_code)
         self.dne_id = dne_id
         self.min_edu_id = min_edu_id
-        self.lat = lat
-        self.lon = lon
+        self.lat = lat and float(lat)
+        self.lon = lon and float(lon)
 
         self.applied_filters = {}
 
@@ -83,11 +90,11 @@ class School(object):
                 s += d
                 cnt += 1
                 if d > threshold:
-                    # The distance between the origin and target schools is higher
-                    # than the acceptable threshold.
+                    # The distance between the origin and target schools is
+                    # higher than the acceptable threshold.
                     return None
-        # If this point is reached, then all the given schools are within the given threshold
-        # then we just return a 'random' one.
+        # If this point is reached, then all the given schools are within the
+        # given threshold then we just return a 'random' one.
         if cnt:
             log.debug("Avg distance: %f (%i) points", s*1.0 / cnt, cnt)
         return schools[0]
@@ -98,72 +105,83 @@ class School(object):
 
 class MinEducHelper(object):
     def __init__(self, data_fname):
-        self.csv_reader = csv.reader(open(data_fname, 'rU'), delimiter=',')
+
         self.schools = []
+        self.schools_by_city = defaultdict(list)
+        self.schools_by_area = defaultdict(list)
+
+        self.csv_reader = csv.reader(open(data_fname, 'rU'), delimiter=',')
+        self.csv_reader.next()  # Skip header
         for school_data in self.csv_reader:
             lat = school_data[10]
             lon = school_data[11]
-            if lat and lon:
-                school = School(
-                    min_edu_id=school_data[0],  # Min. Edu. ID
-                    name=school_data[1],  # nombre
-                    address=school_data[4],  # domicilio
-                    city=school_data[7],  # localidad
-                    area=school_data[8], # departamento
-                    postal_code=school_data[5],  # cp
-                    lat=school_data[10],  # lat
-                    lon=school_data[11],  # lon
-                )
-                self.schools.append(school)
-            else:
-                log.warning("Invalid lat/lon data: %s (id %s)",
-                            school_data[1], school_data[0])
+            if not (lat and lon):
+                log.debug("Invalid lat/lon data: %s (id %s)", school_data[1],
+                          school_data[0])
+                continue
 
-        self.schools_by_city = {}
-        self.schools_by_area = {}
-        for school in self.schools:
-            school_city = school.city.lower().strip()
-            if school_city == 'cordoba':
-                school_city = 'capital'
-            if school_city not in self.schools_by_city:
-               self.schools_by_city[school_city] = [school]
-            else:
-                self.schools_by_city[school_city].append( school )
+            city = normalize_str(school_data[7])
+            if city == 'cordoba':
+                city = 'capital'  # DNE data says city='capital'
+            school = School(
+                min_edu_id=school_data[0],  # Min. Edu. ID
+                name=school_data[1],  # nombre
+                address=school_data[4],  # domicilio
+                city=city,  # localidad
+                area=school_data[8], # departamento
+                postal_code=school_data[5],  # cp
+                lat=school_data[10],  # lat
+                lon=school_data[11],  # lon
+            )
+            self.schools.append(school)
+            self.schools_by_city[school.city].append(school)
+            self.schools_by_area[school.area].append(school)
 
-            school_area = school.area.lower().strip()
-            if school_area not in self.schools_by_area:
-               self.schools_by_area[school_area] = [school]
-            else:
-                self.schools_by_area[school_area].append( school )
+    def get_most_probable(self, school):
+        """
+        Try and guess a geolocation for the given school.
 
+        First, try to subset the schools set where to check: keep those with
+        the same city only. If there's no match in the city, keep those in the
+        same area.
 
-    def guess_geo(self, data):
-        """Try and guess the geolocation of the given data"""
-        # DNE data[13] is called dne_seccion_id and is the ID of the 'area' (departamento).
-        dne_place_id = data[0]
-        voting_place = School(
-            name=data[11],  # establecimiento
-            address=data[6],  # direccion
-            city=data[9],  # localidad
-            area=data[13],  # dne_seccion_id
-            province=data[10],  # distrito
-            postal_code=data[4],  # codigo_postal
-            dne_id=data[0],  # D.N.E. ID
-        )
+        Next, filter the resulting set with two criterias:
+            - A) Keep those with "similar" name, or
+            - B) Keep those with "similar" address.
 
-        results = self.match_name(voting_place)
-        voting_place.applied_filters['name'] = results
+        Next, keep only the intersection of A and B. If it is empty,
+        keep the union.
 
-        results = self.match_address(voting_place)
-        voting_place.applied_filters['address'] = results
+        Finally, in the resulting set of probable schools, compute the
+        geographic distance between all of them. If the max distance is
+        lower than some threshold, then just pick a random sample from the
+        set (we assume that all of them represent the same school).
+        """
+        school_set = self.schools
+        check_area = True
+        if school.city and school.city in self.schools_by_city:
+                school_set = self.schools_by_city[school.city]
+                # If we have the city, no need to check by the area
+                check_area = False
 
-        #results = self.match_area(voting_place)
-        #voting_place.applied_filters['area'] = results
-        #
-        #results = self.match_city(voting_place)
-        #voting_place.applied_filters['city'] = results
+        if check_area:
+            if school.area and school.area in self.schools_by_area:
+                    school_set = self.schools_by_area[school.area]
 
-        return voting_place
+        same_name = self.match_name(school, school_set)
+        same_address = self.match_address(school, school_set)
+
+        same_name = set(same_name)
+        same_address = set(same_address)
+        intersection = set(same_name).intersection(same_address)
+        if intersection:
+            schools_set = intersection
+            match = 'name AND address'
+        else:
+            schools_set = same_name.union(same_address)
+            match = 'name OR address'
+
+        return {'schools_set': schools_set, 'match': match}
 
     def match_name(self, target_place, school_set):
         results = []
