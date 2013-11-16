@@ -3,9 +3,9 @@
 __authors__ = 'Carlos de la Torre, Andrés Blanco'
 
 """
-This script uses data from the Ministerio de Educación de la Provincia de Córdoba
-and data from the Dirección Nacional Electoral, and tries to assign lat/lon coordinates
-to the schools in the DNE.
+This script uses data from the Ministerio de Educación de la Provincia de
+Córdoba and data from the Dirección Nacional Electoral, and tries to assign
+lat/lon coordinates to the schools in the DNE.
 
 """
 
@@ -17,7 +17,8 @@ com_nac_electoral_fname = sys.argv[2]
 output = sys.argv[3]
 
 geo_processor = MinEducHelper(min_educ_fname)
-com_nac_electoral_data = csv.reader(open(com_nac_electoral_fname, 'rU'), delimiter=',')
+com_nac_electoral_data = csv.reader(open(com_nac_electoral_fname, 'rU'),
+                                    delimiter=',')
 output_report = csv.writer(open(output, 'w'), delimiter=',')
 output_report.writerow(['dne_id', 'lat', 'lon'])
 
@@ -51,7 +52,6 @@ for data in com_nac_electoral_data:
     same_name = geo_processor.match_name(voting_place, school_set)
     same_address = geo_processor.match_address(voting_place, school_set)
 
-    #import ipdb; ipdb.set_trace()
     same_name = set(same_name)
     same_address = set(same_address)
     intersection = set(same_name).intersection(same_address)
@@ -66,6 +66,6 @@ for data in com_nac_electoral_data:
             school = School.select_by_proximity(schools_set)
             if school:
                 row = school.output_row("Only name or address")
-                output_report.writerow( row )
+                output_report.writerow(row)
 
 sys.exit(0)
