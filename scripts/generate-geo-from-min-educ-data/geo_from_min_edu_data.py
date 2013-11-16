@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import csv
+import logging as log
 import math
 
 DEPARTAMENTOS = {
@@ -36,7 +37,6 @@ DEPARTAMENTOS = {
 MAX_DISTANCE = 1000
 
 def euclidean_distance(lat_x, lon_x, lat_y, lon_y):
-    #print lat_x, lon_x, lat_y, lon_y
     try:
         lat_x = float(lat_x)
         lon_x = float(lon_x)
@@ -89,12 +89,11 @@ class School(object):
         # If this point is reached, then all the given schools are within the given threshold
         # then we just return a 'random' one.
         if cnt:
-            print "Avg distance: ", s*1.0 / cnt, cnt, " points"
+            log.debug("Avg distance: %f (%i) points", s*1.0 / cnt, cnt)
         return schools[0]
 
     def __str__(self):
         return "%s" % (self.name)
-
 
 
 class MinEducHelper(object):
@@ -117,7 +116,8 @@ class MinEducHelper(object):
                 )
                 self.schools.append(school)
             else:
-                print "Invalid lat/lon data:", school_data[1], school_data[0]
+                log.warning("Invalid lat/lon data: %s (id %s)",
+                            school_data[1], school_data[0])
 
         self.schools_by_city = {}
         self.schools_by_area = {}
